@@ -5,6 +5,37 @@ import rclpy
 
 from rclpy.node import Node #used to create nodes
 from geometry_msgs.msg import Twist # Linear and angular Vel.
+from pyfirmata import Arduino, util
+
+
+board = Arduino("/dev/ttyACM0")
+it = util.Iterator(board)
+
+Lmotor_speed = board.get_pin('d:3:p') # PWM pin 3 to AN1
+Lmotor_DIR = board.get_pin('d:4:o') # define LMotor direction->IN1
+
+Rmotor_speed = board.get_pin('d:9:p') # PWM pin 3 to AN2
+Rmotor_DIR = board.get_pin('d:8:o') # define RMotor direction-> IN2
+
+
+def Motor_Signals(v = 0, yaw_rate = 0):
+    # linear -.7 to +.7, angular -0.4 to +0.4 
+    if v < 0:
+        Lmotor_DIR.write(0) # if v is neg, set direction backwards
+        Lmotor_speed.write(-v*2)
+
+        Rmotor_DIR.write(0) # if v is neg, set direction backwards
+        Rmotor_speed.write(-v)
+    else:
+        Lmotor_DIR.write(1) # if v is neg, set direction backwards
+        Lmotor_speed.write(v*2)
+
+        Rmotor_DIR.write(1) # if v is neg, set direction backwards
+        Rmotor_speed.write(v)
+
+
+
+
 
 class MyNode(Node):
 
@@ -37,6 +68,8 @@ class MyNode(Node):
         
         # Angular velocity around the robot's z axis
         yaw_rate = msg.angular.z
+
+        Motor_Signals(v, yaw_rate)
 
         #Planning to use these to calculate the signal to send to motor controller
         # Have some sort of algorithm => as angular z gets higher, lower speed of one motor by that much (Lmotor_Speed = (1-2z))
