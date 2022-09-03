@@ -17,14 +17,15 @@ Lmotor_DIR = board.get_pin('d:4:o') # define LMotor direction->IN1
 Rmotor_speed = board.get_pin('d:9:p') # PWM pin 3 to AN2
 Rmotor_DIR = board.get_pin('d:8:o') # define RMotor direction-> IN2
 
-
+# Function that writes PWM/DC signal to arduino pins, with specified signal
+# Eventually will have node for each motor, when PID controller is implemented
 def Motor_Signals(v = 0, yaw_rate = 0):
     # linear -.7 to +.7, angular -0.4 to +0.4 
     if v < 0:
-        Lmotor_DIR.write(0) # if v is neg, set direction backwards
+        Lmotor_DIR.write(0) # if v is neg, set digital write low
         Lmotor_speed.write(-v*2)
 
-        Rmotor_DIR.write(0) # if v is neg, set direction backwards
+        Rmotor_DIR.write(0)
         Rmotor_speed.write(-v)
     else:
         Lmotor_DIR.write(1) # if v is neg, set direction backwards
