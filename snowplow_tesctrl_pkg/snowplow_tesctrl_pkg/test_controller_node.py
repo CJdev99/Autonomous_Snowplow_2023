@@ -8,8 +8,8 @@ from geometry_msgs.msg import Twist # Linear and angular Vel.
 from pyfirmata import Arduino, util
 
 
-board = Arduino("/dev/ttyACM0")
-it = util.Iterator(board)
+board = Arduino("/dev/ttyACM0") # Access board via serial
+it = util.Iterator(board) # Used to throttle signal when board is overloaded (usually only for analog)
 
 Lmotor_speed = board.get_pin('d:3:p') # PWM pin 3 to AN1
 Lmotor_DIR = board.get_pin('d:4:o') # define LMotor direction->IN1
@@ -20,7 +20,7 @@ Rmotor_DIR = board.get_pin('d:8:o') # define RMotor direction-> IN2
 # Function that writes PWM/DC signal to arduino pins, with specified signal
 # Eventually will have node for each motor, when PID controller is implemented
 def Motor_Signals(v = 0, yaw_rate = 0):
-    # linear -.7 to +.7, angular -0.4 to +0.4 
+    # linear v, angV ranges from -.7 to +.7, angular -0.4 to +0.4 respectively
     if v < 0:
         Lmotor_DIR.write(0) # if v is neg, set digital write low
         Lmotor_speed.write(-v*2)
@@ -41,10 +41,10 @@ def Motor_Signals(v = 0, yaw_rate = 0):
 class MyNode(Node):
 
     def __init__(self):
-        super().__init__("test_controller")
-        self.get_logger().info("Hello ROS2")
+        super().__init__("test_controller") 
+        self.get_logger().info("TestController Node is Running") # Prints message to command line
 
-        #Code goes here
+        #
         # Create a subscriber 
         # This node subscribes to messages of type 
         # geometry_msgs/Twist.msg. We are listening to the velocity commands here.
@@ -69,7 +69,7 @@ class MyNode(Node):
         
         # Angular velocity around the robot's z axis
         yaw_rate = msg.angular.z
-
+        #Call motor function, which sends the appropriate signal to the pins
         Motor_Signals(v, yaw_rate)
 
         #Planning to use these to calculate the signal to send to motor controller
@@ -84,7 +84,7 @@ def main(args=None):
 
 
 
-    rclpy.spin(node)
+    rclpy.spin(node) 
 
     rclpy.shutdown()
 
