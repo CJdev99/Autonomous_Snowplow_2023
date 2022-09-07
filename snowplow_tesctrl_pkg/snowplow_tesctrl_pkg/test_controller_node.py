@@ -28,10 +28,10 @@ def Motor_Signals(v = 0, yaw_rate = 0):
         Rmotor_DIR.write(0)
         Rmotor_speed.write(-v)
     else:
-        Lmotor_DIR.write(1) # if v is neg, set direction backwards
+        Lmotor_DIR.write(1) # if v is neg, set write high
         Lmotor_speed.write(v*2)
 
-        Rmotor_DIR.write(1) # if v is neg, set direction backwards
+        Rmotor_DIR.write(1) # if v is neg, set write high
         Rmotor_speed.write(v)
 
 
