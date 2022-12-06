@@ -1,0 +1,8 @@
+<launch>
+  <node name="gps"
+        pkg="gps_tcp_publisher"
+        type="gps.py"
+        output="screen">
+    <rosparam command="load" file="$(find gps_tcp_punlisher)/config/gps.yaml" />
+  </node>
+</launch>

@@ -1,0 +1,143 @@
+<launch>
+
+   <!-- Transformation Configuration ... Setting Up the Relationships Between Coordinate Frames --> 
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" args="0.06 0 0.08 0 0 0 base_link laser 30" />
+  <node pkg="tf" type="static_transform_publisher" name="imu_broadcaster" args="0 0.06 0.02 0 0 0 base_link imu_frame 30" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link_broadcaster" args="0 0 0.09 0 0 0 base_footprint base_link 30" />
+  
+  <!-- odom to base_footprint transform will be provided by the robot_pose_ekf node -->
+  <!-- map to odom will be provided by the AMCL -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 map odom 30" />
+  <!--node pkg="tf" type="static_transform_publisher" name="tf_imu_ned_enu" args="0 0 0 1.5708 0 3.1416 imu_frame imu_link 30" output="screen"/ -->
+
+
+  <!-- Wheel Odometry Publisher // motor driver -->
+  <!-- Subscribe: /right_ticks, /left_ticks, /initial_2d -->
+  <!-- Publish: /odom_data_euler, /odom_data_quat -->
+  <!--(original) node pkg="localization_data_pub" type="ekf_odom_pub" name="ekf_odom_pub"></node--> 
+
+  <!-- subscribes to cmd_vel topic -->
+  <!-- publishes odom topic with base_link frame -->
+  <!-- broadcasts odom->base_link transform -->
+  <include file="$(find roboteq_diff_driver)/launch/driver.launch"/>
+
+	
+  <!-- IMU Data Publisher Using the BNO08x IMU Sensor -->
+  <!-- Publish: /imu/data -->
+  <!-- Publish: /bno08x/raw -->
+  <node name="ros_bno08x" pkg="ros_bno08x" type="talker.py" respawn="true" respawn_delay="2" output="screen">
+    <param name="frame_id" type="string" value="imu_frame"/>
+    <param name="cov_linear" value=".00001"/>
+    <param name="cov_angular" value=".00001"/>
+    <param name="cov_magnetic" value=".00001"/>
+    <param name="cov_orientation" value=".00001"/>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="imu_manager" args="manager"/>
+
+  <!--transform imu to ENU, publishes imu/data_raw, imu/mag-->
+  <node pkg="nodelet" type="nodelet" name="imu_data_transformer" args="load imu_transformer/imu_transformer_nodelet imu_manager">
+    <remap from="imu_in/data" to="bno08x/raw"/>
+    <remap from="imu_in/mag" to="bno08x/mag"/>
+    <remap from="imu_out/data" to="imu/data_raw"/>
+    <remap from="imu_out/mag" to="imu/mag"/>
+    <param name="target_frame" value="base_link"/>
+  </node>
+
+  <!-- filter raw data: publish to imu/data, subscribes imu/data_raw, imu/mag [might take this out] -->
+  <node pkg="nodelet" type="nodelet" name="imu_filter" args="load imu_filter_madgwick/ImuFilterNodelet imu_manager">
+    <rosparam>
+      use_mag: true
+      mag_bias_x: 0
+      mag_bias_y: 0
+      mag_bias_z: 0
+      orientation_stddev: 0.001
+      gain: 0.01
+      zeta: 0.001
+      publish_tf: false
+    </rosparam>
+  </node>
+
+
+  <!-- GPS launches: publishes NavSatFix to /fix, which will be used with navsat_transform_node-->
+  
+  <node pkg="gps_tcp_publisher" type="gps_driver.py" name="gps_driver">
+  </node>
+
+  <!-- Node that converts Lat,lon to UTM: subs to /fix, publishes nav_msgs/vo to base_footprint-->
+  <node name="gps_conv" pkg="gps_common" type="utm_odometry_node">
+    <remap from="odom" to="vo"/>
+    <!--remap from="fix" to="/gps/fix" / -->
+    <param name="rot_covariance" value="99999" />
+    <param name="frame_id" value="base_footprint" />
+  </node>
+
+
+  <!-- Extended Kalman Filter from robot_pose_ekf Node-->
+  <!-- Subscribe: /odom, /imu_data, /vo, bsae_ftprnt to odom -->
+  <!-- Publish: /robot_pose_ekf/odom_combined -->
+  <!-- remap from="odom" to="odom_data_quat" /-->
+  <!--remap from="imu_data" to="imu_data/raw" / -->
+  <!--remap from="vo" to="gps_meas" / [/gps topic must have odometry message!!] gps = true => subscribes to /gps in form of odometry msg-->
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+    <remap from="imu_data" to="imu/data" />
+    <param name="output_frame" value="odom"/>
+    <param name="base_footprint_frame" value="base_footprint"/>
+    <param name="freq" value="30.0"/>
+    <param name="sensor_timeout" value="1.0"/>
+    <param name="odom_used" value="true"/>
+    <param name="imu_used" value="true"/>
+    <param name="vo_used" value="false"/>
+    <param name="gps_used" value="true"/>
+    <param name="debug" value="false"/>
+    <param name="self_diagnose" value="false"/>
+    <param name="imu_absolute" value="true"/>
+  </node>
+
+  <!-- Initial Pose and Goal Publisher -->
+  <!-- Publish: /initialpose, /move_base_simple/goal -->
+  <node pkg="rviz" type="rviz" name="rviz">
+  </node> 
+
+  <!-- Subscribe: /initialpose, /move_base_simple/goal -->
+  <!-- Publish: /initial_2d, /goal_2d --> 
+  <node pkg="localization_data_pub" type="rviz_click_to_2d" name="rviz_click_to_2d">
+  </node>
+
+  <!-- Lidar Data Publisher Using RPLIDAR from Slamtec (A3) -->
+  <!-- Used for obstacle avoidance and can be used for mapping -->
+  <!-- Publish: /scan -->
+  <!--node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+    <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>
+    <param name="serial_baudrate"     type="int"    valnnue="256000">
+    <param name="frame_id"            type="string" value="laser"/>
+    <param name="inverted"            type="bool"   value="false"/>
+    <param name="angle_compensate"    type="bool"   value="true"/>
+  </node -->
+	
+  <!-- Map File CHANGE -->
+  <arg name="map_file" default="$(find navigation_data_pub)/maps/floorplan4.yaml"/>
+
+  <!-- Map Server -->
+  <!-- Publish: /map, /map_metadata TODO: add map file arg -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- Add AMCL example for differential drive robots for Localization -->
+  <!-- Subscribe: /scan, /tf, /initialpose, /map -->
+  <!-- Publish: /amcl_pose, /particlecloud, /tf -->
+  <include file="$(find amcl)/examples/amcl_diff.launch"/>
+
+
+  <!-- Move Base Node -->
+  <!-- Subscribe: /move_base_simple/goal -->
+  <!-- Publish: /cmd_vel -->
+  <!--node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find navstack_pub)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navstack_pub)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navstack_pub)/param/local_costmap_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navstack_pub)/param/global_costmap_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navstack_pub)/param/base_local_planner_params.yaml" command="load" />
+  </node -->
+
+
+</launch>
