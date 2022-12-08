@@ -69,6 +69,14 @@ class TrimbleBD990(object):
     def preempt(self):
         self._preempted = True
         #self._sock.send_break()
+    """
+    test:
+    def read_sentence(self):
+    response = self.readline()              # Get raw sentence
+    response = response.strip()             # Strip whitespace
+    if response:
+        self.decode(response)
+    """
 
     def read_sentence(self):
         response = self.readline()              # Get raw sentence
@@ -87,6 +95,22 @@ class TrimbleBD990(object):
             self.decode_hdt(sentence)
         else:
             rospy.logwarn('Warning [TrimbleBD990.decode]: Sentence type not recognized')
+    """
+    test:
+    def decode(self, sentence):
+        try:
+            msg = pynmea2.parse(sentence)
+            if msg.sentence_type == 'GGA':
+                self.decode_gga(msg)
+            elif msg.sentence_type == 'GST':
+                self.decode_gst(msg)
+            elif msg.sentence_type == 'HDT':
+                self.decode_hdt(msg)
+            else:
+                rospy.logwarn('Warning [TrimbleBD990.decode]: Sentence type not recognized')
+        except pynmea2.ParseError as e:
+            rospy.logerr('Error [TrimbleBD990.decode]: ' + str(e))
+     """
 
     def decode_gga(self, sentence):
         self.lat = float(sentence[2])
