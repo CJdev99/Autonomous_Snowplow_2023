@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import rospy
 from gps_tcp_publisher import TrimbleBD990
@@ -20,7 +20,7 @@ if __name__ == "__main__":
             
     """
     test:
-    #!/usr/bin/env python
+    #!/usr/bin/python3
 
 import rospy
 import serial
