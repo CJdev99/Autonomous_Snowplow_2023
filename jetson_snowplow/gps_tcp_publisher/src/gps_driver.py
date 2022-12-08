@@ -110,6 +110,34 @@ class TrimbleBD990(object):
                 rospy.logwarn('Warning [TrimbleBD990.decode]: Sentence type not recognized')
         except pynmea2.ParseError as e:
             rospy.logerr('Error [TrimbleBD990.decode]: ' + str(e))
+            
+     def decode_gga(self, msg):
+    self.lat = float(msg.latitude)
+    if msg.lat_dir == 'S':
+        self.lat = (self.lat * -1.0)
+
+    self.long = float(msg.longitude)
+    if msg.lon_dir == 'W':
+        self.long = (self.long * -1.0)
+
+    self.alt = float(msg.altitude)
+    self.fixStatus = int(msg.gps_qual)
+    
+    def decode_gst(self, msg):
+    # Covariance matrix diagonal values are the squares
+    # of the individual standard deviations
+    lat_covariance = (float(msg.lat_stddev) * float(msg.lat_stddev))
+    long_covariance = (float(msg.lon_stddev) * float(msg.lon_stddev))
+    alt_covariance = (float(msg.alt_stddev) * float(msg.alt_stddev))
+
+    # Covariance Matrix
+    self.covariance = [lat_covariance, 0.0, 0.0,
+                       0.0, long_covariance, 0.0,
+                       0.0, 0.0, alt_covariance]
+
+def decode_hdt(self, msg):
+    if msg.heading:
+        self.heading = float(msg.heading)
      """
 
     def decode_gga(self, sentence):
