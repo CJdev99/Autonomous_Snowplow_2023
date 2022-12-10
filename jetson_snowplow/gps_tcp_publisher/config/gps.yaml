@@ -1,3 +1,0 @@
-port: '/dev/ttyUSB0'
-baudrate: 38400
-timeout: 0.5
