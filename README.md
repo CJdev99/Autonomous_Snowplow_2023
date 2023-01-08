@@ -2,7 +2,7 @@
 code for 2022-2023 snowplow group.
 
 Sensors in use;
-- Trimble GPS deciever, swiftnav antenna, 2 1024 ppr encoders, Intel d435i depth camera
+- Trimble GPS reciever, swiftnav antenna, 2 1024 ppr encoders, Intel d435i depth camera
 
 - robot_localization EKF fusing data from the 3 sensors
 
