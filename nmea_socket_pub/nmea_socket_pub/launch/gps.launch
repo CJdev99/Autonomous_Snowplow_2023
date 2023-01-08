@@ -1,0 +1,8 @@
+<launch>
+  <node name="nmea_socket_pub"
+        pkg="nmea_socket_pub"
+        type="gps.py"
+        output="screen">
+    <rosparam command="load" file="$(find nmea_socket_pub)/config/gps.yaml" />
+  </node>
+</launch>
