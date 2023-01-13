@@ -1,0 +1,237 @@
+ekf_se_odom:
+  frequency: 30
+  sensor_timeout: 0.1
+  two_d_mode: true
+  transform_time_offset: 0.05
+  transform_timeout: 0.0
+  print_diagnostics: true
+  debug: false
+
+  map_frame: map
+  odom_frame: odom
+  base_link_frame: base_link
+  world_frame: odom
+
+  # -------------------------------------
+  # Wheel odometry:
+
+  odom0: /odom
+  odom0_config: [true, true, false,
+                 false, false, false,
+                 true,  true,  false,
+                 false, false, true,
+                 false, false, false]
+  odom0_queue_size: 20
+  odom0_nodelay: true
+  odom0_differential: false # try to change this
+  odom0_relative: true
+
+  # -------------------------------------
+  # GPS odometry: change to odometry/gps
+
+  #odom1: /odometry/gps
+  #odom1_config: [true,  true,  false,
+  #               false, false, false,
+  #               false, false, false,
+  #               false, false, false,
+  #               false, false, false]
+  #odom1_queue_size: 5
+  #odom1_nodelay: false
+  #odom1_differential: false
+  #odom1_relative: false
+  
+  #odom2: rtabmap/odom
+  #odom2_config: [false, false, false,
+  #                  false, false, false,
+  #                  true, true, true,
+  #                  false, false, false,
+  #                  false, false, false]
+  #odom2_differential: false
+  #odom2_relative: true
+  #odom2_queue_size: 10
+  #odom2_pose_rejection_threshold: 1000
+  #odom2_twist_rejection_threshold: 1000
+  #odom2_nodelay: false
+
+
+    # -------------------------------------
+  # Laser scanmatching odometry:
+
+  #  odom2: scanmatch_odom
+  #  odom2_config: [false, false, false,
+  #                 false, false, false,
+  #                 true,  true,  true,
+  #                 false, false, true,
+  #                 false, false, false]
+  #  odom2_queue_size: 10
+  #  odom2_nodelay: true
+  #  odom2_differential: false
+  #  odom2_relative: false
+
+  # --------------------------------------
+  # imu configure:
+  imu0: /imu/data
+  imu0_config: [false, false, false,
+                false,  false,  true,
+                false, false, false,
+                true,  true,  true,
+                true,  false,  false]
+  imu0_nodelay: true #changed
+  imu0_differential: false
+  imu0_relative: false
+  imu0_queue_size: 10
+  imu0_remove_gravitational_acceleration: true 
+
+  use_control: false
+
+  #                           x    y     z     r     p     yaw   dx     dy     dz    dr    dp   dyaw   d2x   d2y   d2z
+  process_noise_covariance: [0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0.06, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0.03,  0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0.03,  0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0.06, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0.025,   0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0.025,   0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0.04,  0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0.01,  0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.01,  0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.02,  0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.01,  0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.01,  0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.015]
+
+  initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    1e-9,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    1e-9,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    1e-9,  0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    1e-9,  0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    1e-9,  0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-9,   0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1e-9,   0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1e-9,   0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9,  0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9,  0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]
+ekf_se_map:
+  frequency: 30
+  sensor_timeout: 0.1
+  two_d_mode: true
+  transform_time_offset: 0.05
+  transform_timeout: 0.0
+  print_diagnostics: true
+  debug: false
+
+  map_frame: map
+  odom_frame: odom
+  base_link_frame: base_link
+  world_frame: map
+  #publish_tf: false
+
+  # -------------------------------------
+  # Wheel odometry:
+
+  odom0: /odom
+  odom0_config: [true, true, false,
+                 false, false, false,
+                 true,  true,  false,
+                 false, false, true,
+                 false, false, false]
+  odom0_queue_size: 10
+  odom0_nodelay: true
+  odom0_differential: false # try to change this
+  odom0_relative: true
+
+  # -------------------------------------
+  # GPS odometry: change to odometry/gps
+
+  odom1: /odometry/gps
+  odom1_config: [true,  true,  false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false]
+  odom1_queue_size: 10
+  odom1_nodelay: false
+  odom1_differential: true
+  odom1_relative: false
+  
+  #odom2: rtabmap/odom
+  #odom2_config: [false, false, false,
+  #                  false, false, false,
+  #                  true, true, true,
+  #                  false, false, false,
+  #                  false, false, false]
+  #odom2_differential: false
+  #odom2_relative: true
+  #odom2_queue_size: 10
+  #odom2_pose_rejection_threshold: 1000
+  #odom2_twist_rejection_threshold: 1000
+  #odom2_nodelay: false
+
+
+    # -------------------------------------
+  # Laser scanmatching odometry:
+
+  #  odom2: scanmatch_odom
+  #  odom2_config: [false, false, false,
+  #                 false, false, false,
+  #                 true,  true,  true,
+  #                 false, false, true,
+  #                 false, false, false]
+  #  odom2_queue_size: 10
+  #  odom2_nodelay: true
+  #  odom2_differential: false
+  #  odom2_relative: false
+
+  # --------------------------------------
+  # imu configure:
+  imu0: /imu/data
+  imu0_config: [false, false, false,
+                false,  false,  true,
+                false, false, false,
+                true,  true,  true,
+                true,  false,  false]
+  imu0_nodelay: true #changed
+  imu0_differential: false
+  imu0_relative: false
+  imu0_queue_size: 10
+  imu0_remove_gravitational_acceleration: true 
+
+  use_control: false
+
+  #                           x    y     z     r     p     yaw   dx     dy     dz    dr    dp   dyaw   d2x   d2y   d2z
+  process_noise_covariance: [0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0.06, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0.03,  0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0.03,  0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0.06, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0.025,   0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0.025,   0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0.04,  0,    0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0.01,  0,    0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.01,  0,    0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.02,  0,    0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.01,  0,    0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.01,  0,
+                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.015]
+
+  initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    1e-9,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    1e-9,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    1e-9,  0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    1e-9,  0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    1e-9,  0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-9,   0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1e-9,   0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1e-9,   0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9,  0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9,  0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]
