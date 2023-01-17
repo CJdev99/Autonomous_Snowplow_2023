@@ -1,0 +1,133 @@
+<launch>
+
+
+    <node pkg="tf" type="static_transform_publisher" name="imu_broadcaster" args="-.4064 .3048 .4572 0 0 0 base_link imu 50"/>
+    <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args=".03 0 .597 0 0 0 base_link camera_link 50"/>
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_footprint" args="0.42 0 0.42 0 0 0 base_footprint base_link 50"/>
+    <!--node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 map odom 100"/-->
+    <node pkg="tf" type="static_transform_publisher" name="gps_to_link" args="-0.2 0 0.45 0 0 0 base_link gps_link 50"/>
+    <!--Launch odom, imu, gps-->
+  
+  
+    <!-- subscribes to cmd_vel topic -->
+    <!-- publishes odom topic with base_link frame -->
+    <!-- broadcasts odom->base_footprint transform -->
+    <!--include file="$(find roboteq_diff_driver)/launch/driver.launch">
+    </include-->
+
+    <!--node pkg="nmea_socket_pub" type="driver.py" name="trimble_gps"/-->
+
+    <arg name="offline"          default="false"/>
+    <include unless="$(arg offline)" 
+        file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="align_depth" value="true"/>
+        <arg name="linear_accel_cov" value="1.0"/>
+        <arg name="unite_imu_method" value="linear_interpolation"/>
+        <arg name="filters" value="pointcloud"/>
+    </include>
+    
+
+    <!-- publish /scan from depth camera->lidarscan -->
+
+    <include file="$(find depthimage_to_laserscan)/launch/launchfile_sample.launch"/>
+    <!--Filter & throttle raw pointcloud2 data from camera: launches throttle and obstacles_detection -->
+    <include file="$(find navstack_pub)/launch/voxelgrid_throt.launch"/>
+
+
+    <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+        <arg name="args" value="--delete_db_on_start"/>
+        <arg name="rgb_topic" value="/camera/color/image_raw"/>
+        <arg name="subscribe_scan" value="false"/>
+        <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw"/>
+        <arg name="camera_info_topic" value="/camera/color/camera_info"/>
+        <arg name="depth_camera_info_topic" value="/camera/depth/camera_info"/>
+        <arg name="rtabmapviz" value="false"/>
+        <arg name="rviz" value="false"/>
+        <arg name="frame_id" value="base_footprint"/>
+        <arg name="approx_sync" value="false"/>
+        <arg name="gps_topic" value="trimble_gps/fix"/>
+        <arg name="odom_topic" value="/odom"/>
+        <arg name="odom_frame_id" value="odom"/>
+        <arg name="localization" value="false"/>
+
+
+    </include>
+
+    <!--include file="$(find navstack_pub)/launch/ukf.launch"/-->
+    <include file="$(find navstack_pub)/launch/single_ekf.launch"/>
+
+
+
+    <arg name="map" default="/home/chase/catkin_ws/maps/trafton_garage_2.yaml"/>/>
+    <arg name="target_x_vel" default="0.5"/>
+    <arg name="target_yaw_vel" default="0.6"/>
+    <arg name="robot_radius" default="0.6604"/>
+    <arg name="tool_radius" default="1.0"/>
+
+    <!--Move base flex, using the full_coverage_path_planner-->
+    <node pkg="mbf_costmap_nav" type="mbf_costmap_nav" respawn="false" name="move_base_flex" output="screen" required="true">
+        <param name="tf_timeout" value="1.5"/>
+        <rosparam file="$(find full_coverage_path_planner)/test/full_coverage_path_planner/param/planners.yaml" command="load" />
+        <rosparam file="$(find full_coverage_path_planner)/test/full_coverage_path_planner/param/local_costmap_params.yaml" command="load" />
+
+        <param name="SpiralSTC/robot_radius" value="$(arg robot_radius)"/>
+        <param name="SpiralSTC/tool_radius" value="$(arg tool_radius)"/>
+        <param name="global_costmap/robot_radius" value="$(arg robot_radius)"/>
+        <remap from="odom" to="/odometry/filtered"/>
+        <remap from="scan" to="/scan"/>
+
+        <remap from="/move_base_flex/SpiralSTC/plan" to="/move_base/SpiralSTC/plan"/>
+        <remap from="/move_base_flex/tracking_pid/interpolator" to="/move_base/TrackingPidLocalPlanner/interpolator"/>
+    </node>
+    <!-- Move Base backwards compatibility -->
+    <node pkg="mbf_costmap_nav" type="move_base_legacy_relay.py" name="move_base"/>
+
+    <!--We need a map to fully cover-->
+    <node name="grid_server" pkg="map_server" type="map_server" args="$(arg map)">
+        <param name="frame_id" value="map"/>
+    </node>
+
+    <node name="interpolator" pkg="tracking_pid" type="path_interpolator">
+        <param name="target_x_vel" value="$(arg target_x_vel)"/>
+        <param name="target_x_acc" value="1.0"/>
+        <param name="target_yaw_vel" value="$(arg target_yaw_vel)"/>
+        <remap from="path" to="/move_base/SpiralSTC/plan"/>
+    </node>
+
+        <!--Tracking_pid tries to get the robot as close to it's goal point as possible-->
+    <node name="controller" pkg="tracking_pid" type="controller" output="screen">
+        <remap from="move_base/cmd_vel" to="/cmd_vel"/>
+        <remap from="local_trajectory" to="trajectory"/>
+        <param name="controller_debug_enabled" value="True"/>
+        <param name="track_base_link" value="true"/>
+        <param name="l" value="0.5"/>
+        <param name="Ki_long" value="0.0"/>
+        <param name="Kp_long" value="2.0"/>
+        <param name="Kd_long" value="0.5"/>
+        <param name="Ki_lat" value="0.0"/>
+        <param name="Kp_lat" value="4.0"/>
+        <param name="Kd_lat" value="0.3"/>
+    </node>
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_coveragemap" args="0 0 0 0.0 0 0 map coverage_map 100"/>
+    <node pkg="full_coverage_path_planner" type="coverage_progress" name="coverage_progress">
+        <param name="~target_area/x" value="10"/>
+        <param name="~target_area/y" value="10"/>
+        <param name="~coverage_radius" value="$(arg tool_radius)"/>
+        <remap from="reset" to="coverage_progress/reset"/>
+        <param name="~map_frame" value="coverage_map"/>
+    </node>
+
+    <node name="publish_simple_goal" pkg="rostopic" type="rostopic"  launch-prefix="bash -c 'sleep 1.0; $0 $@' "
+        args="pub --latch /move_base/goal move_base_msgs/MoveBaseActionGoal --file=$(find full_coverage_path_planner)/test/simple_goal.yaml"/>
+    <!-- Mobile robot simulator -->
+    <!--node pkg="mobile_robot_simulator" type="mobile_robot_simulator_node" name="mobile_robot_simulator" output="screen">
+        <param name="publish_map_transform" value="true"/>
+        <param name="publish_rate" value="10.0"/>
+        <param name="velocity_topic" value="/move_base/cmd_vel"/>
+        <param name="odometry_topic" value="/odometry/filtered"/>
+    </node-->
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find full_coverage_path_planner)/test/full_coverage_path_planner/fcpp.rviz" />
+</launch>

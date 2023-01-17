@@ -1,0 +1,15 @@
+
+shutdown_costmaps: false
+controller_frequency: 20
+controller_patience: 5
+
+planner_frequency: 15
+planner_patience: 5
+
+oscillation_timeout: 20
+oscillation_distance: 0.2
+
+base_local_planner: "base_local_planner/TrajectoryPlannerROS"
+base_global_planner: "navfn/NavfnROS"
+recovery_behavior_enabled: true
+clearing_rotation_allowed: false
