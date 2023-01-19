@@ -16,5 +16,8 @@ Sensors in use:
   - points_xyzrgb creates pointcloud2 data from synchronized RGB-D images, used for 3-D voxel obstacle layer
   - obstacle_detection package used to differentiate ground & obstacles, used for clearing & marking in costmaps
   - RTABmap_ros used to generate & store grid map from RGB-D images, will include LiDAR for mapping when functional
+ 
+ Buffer_waypoints package uses move_base action servers to buffer waypoints sent to the node as pose goals
+  - subscribes to /initialpose topic published by RVIZ, allowing user to click desired location & orientation for the robot to travel
   
 
