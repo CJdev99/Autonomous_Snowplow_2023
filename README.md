@@ -7,7 +7,6 @@ Sensors in use;
 - robot_localization EKF fusing data from the 3 sensors
 
 - RTABmap used for mapping
-  - depthimage_to_laserscan package to create scan data to assist obstacle detection and costmap updating
   
   - Voxel_grid nodelet used to filter raw pointcloud2 data from the realsense camera
     - Filtered pointcloud2 published to obstacle_detection node
