@@ -15,6 +15,6 @@ Sensors in use:
   - RGBD_Sync nodelet used to synchronize frames & data stream from realsense driver
   - points_xyzrgb creates pointcloud2 data from synchronized RGB-D images, used for 3-D voxel obstacle layer
   - obstacle_detection package used to differentiate ground & obstacles, used for clearing & marking in costmaps
-  - RTABmap_ros used to generate & store grid map from RGB-D images
+  - RTABmap_ros used to generate & store grid map from RGB-D images, will include LiDAR for mapping when functional
   
 
