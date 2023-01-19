@@ -21,6 +21,6 @@ Sensors in use:
   - subscribes to /initialpose topic published by RVIZ, allowing user to click desired location & orientation for the robot to travel
  
  nmea_socket_pub:
-  - reads GPS/GNSS sentence streams over specified TCP port, parsing GGA & GST sentences to both applicable GPS fix data, as well as a published covariance matrix
+  - reads GPS/GNSS NMEA sentence streams over specified TCP port, parsing GGA & GST sentences to both applicable GPS fix data, as well as a published covariance matrix
     - covariance matrix updated in real-time, so the kalman filter fused data takes more or less accurate GPS data into account
 
