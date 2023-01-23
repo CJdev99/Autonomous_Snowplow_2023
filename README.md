@@ -1,5 +1,5 @@
 # Autonomous-Snowplow-2022-2023
-Metapackage including ROS packages, configurations, and launch files used on the 2022-2023 autonomous snowplow project.
+Metapackage including ROS packages, configurations, and launch files used on the 2022-2023 MNSU autonomous snowplow project.
 
 Sensors in use:
 - Trimble GPS reciever, swiftnav antenna, 2 1024 ppr encoders, Intel d435i depth camera
