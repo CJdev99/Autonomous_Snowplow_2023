@@ -12,7 +12,7 @@ Sensors in use:
  
  Intel D435i RGB-D camera & SiCK LiDAR used in RTABmap package for SLAM/mapping
   - Parameters and filters located under (Autonomous_Snowplow_2023/jetson_snowplow/navstack_pub/launch/voxelgrid_throt.launch)
-  - RGBD_Sync nodelet used to synchronize frames & data stream from realsense driver
+  - RGBD_Sync nodelet used to synchronize image frames & depth camera data stream from realsense driver
   - points_xyzrgb creates pointcloud2 data from synchronized RGB-D images, used for 3-D voxel obstacle layer
   - obstacle_detection package used to differentiate ground & obstacles, used for clearing & marking in costmaps
   - RTABmap_ros used to generate & store grid map from RGB-D images, will include LiDAR for mapping when functional
