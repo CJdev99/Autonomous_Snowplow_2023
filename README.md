@@ -1,4 +1,4 @@
-# Autonomous-Snowplow-2022-2023
+# MSU, Mankato's 2023 Autonomous Snowplow
 Metapackage including ROS packages, configurations, and launch files used on the 2022-2023 MNSU autonomous snowplow project.
 
 Sensors in use:
