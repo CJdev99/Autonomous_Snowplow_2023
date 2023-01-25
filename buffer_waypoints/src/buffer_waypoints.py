@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import rospy
 from geometry_msgs.msg import PoseWithCovarianceStamped, PointStamped
 from move_base_msgs.msg import MoveBaseAction,MoveBaseActionGoal, MoveBaseGoal, MoveBaseActionResult
