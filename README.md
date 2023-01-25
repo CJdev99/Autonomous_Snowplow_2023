@@ -2,7 +2,7 @@
 Metapackage including ROS packages, configurations, and launch files used on the 2022-2023 MNSU autonomous snowplow project.
 
 Sensors in use:
-- Trimble GPS reciever, swiftnav antenna, LPMS IMU 2 1024 ppr encoders, Intel d435i depth camera
+- Trimble GPS reciever, swiftnav antenna, LPMS U3 IMU, 2 1024 ppr encoders, Intel d435i depth camera
 
 - robot_localization EKF fusing data from the 3 sensors
   - Wheel odometry stream from roboteq_diff_driver - accesses motor controller through C++ api to  receive encoder tick count, current in Amps through each motor channel, and temperature of motor controller
