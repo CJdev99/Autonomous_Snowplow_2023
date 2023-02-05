@@ -9,7 +9,7 @@ class LeaveGarage(smach.State):
         # Code for opening the garage door and driving out of the garage
         # ...
         return 'succeeded'
-
+# This could be using path_coverage_planner -> call external method to create path. Once complete (or failed) change state
 class NavigateWaypoints(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['succeeded'])
