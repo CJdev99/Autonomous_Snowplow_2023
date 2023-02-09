@@ -23,4 +23,6 @@ Sensors in use:
  nmea_socket_pub:
   - reads GPS/GNSS NMEA sentence streams over specified TCP port, parsing GGA & GST sentences to both applicable GPS fix data, as well as a published covariance matrix
     - covariance matrix updated in real-time, so the kalman filter fused data takes more or less accurate GPS data into account
+    
+ OpenCV scripts used to convert PNG images of a map/blueprint into binary for use in map servers.
 
