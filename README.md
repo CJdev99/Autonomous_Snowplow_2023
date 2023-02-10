@@ -8,7 +8,7 @@ Sensors in use:
   - Wheel odometry stream from roboteq_diff_driver - accesses motor controller through C++ api to  receive encoder tick count, current in Amps through each motor channel, and temperature of motor controller
   - IMU data stream from openzen_ros C++ driver
     - Filtered & Fused orientation from magnetometer, quaternion, gyro, and accelerometer data using IMU madgwick filter
-  - GPS data stream from nmea_socket_pub, parsed GPS data converted to robot coordinate frame using navsat_transform
+  - GPS data stream from nmea_socket_pub, parsed NMEA sentences converted to robot coordinate frame using navsat_transform
  
  Intel D435i RGB-D camera & SiCK LiDAR used in RTABmap package for SLAM/mapping
   - Parameters and filters located under (Autonomous_Snowplow_2023/jetson_snowplow/navstack_pub/launch/voxelgrid_throt.launch)
