@@ -3,47 +3,44 @@ import cv2
 import math
 import os.path
 
-#
-#  This is a start for the map program
-#
+
 prompt = '> '
 
 print("What is the name of your floor plan you want to convert to a ROS map:") 
 file_name = input(prompt)
 print("You will need to choose the x coordinates horizontal with respect to each other")
 print("Double Click the first x point to scale")
-#
+
 # Read in the image
-#
+
 image = cv2.imread(file_name)
-#
-# Some variables
-#
+
+
+
 ix,iy = -1,-1
 x1 = [0,0,0,0]
 y1 = [0,0,0,0]
 font = cv2.FONT_HERSHEY_SIMPLEX
-#
+
 # mouse callback function
 # This allows me to point and 
 # it prompts me from the command line
-#
 def draw_point(event,x,y,flags,param):
     global ix,iy,x1,y1n,sx,sy
     if event == cv2.EVENT_LBUTTONDBLCLK:
         ix,iy = x,y
         print(ix,iy)
-    #
+    
     # Draws the point with lines around it so you can see it
-    #
+    
         image[iy,ix]=(0,0,255)
         cv2.line(image,(ix+2,iy),(ix+10,iy),(0,0,255),1)
         cv2.line(image,(ix-2,iy),(ix-10,iy),(0,0,255),1)
         cv2.line(image,(ix,iy+2),(ix,iy+10),(0,0,255),1)
         cv2.line(image,(ix,iy-2),(ix,iy-10),(0,0,255),1)
-    #
+    
     # This is for the 4 mouse clicks and the x and y lengths
-    #
+    
         if x1[0] == 0:
             x1[0]=ix
             y1[0]=iy
@@ -108,9 +105,9 @@ def draw_point(event,x,y,flags,param):
 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
 cv2.setMouseCallback('image',draw_point)
-#
+
 #  Waiting for a Esc hit to quit and close everything
-#
+
 while(1):
     cv2.imshow('image',image)
     k = cv2.waitKey(20) & 0xFF
