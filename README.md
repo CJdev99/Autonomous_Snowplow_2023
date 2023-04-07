@@ -1,4 +1,8 @@
 # MSU, Mankato's 2023 Autonomous Snowplow
+
+![]https://github.com/CJdev99/Autonomous_Snowplow_2023/blob/main/robot_gif.gif
+
+
 Metapackage including ROS packages, configurations, and launch files used on the 2022-2023 MNSU autonomous snowplow project.
 
 Sensors in use:
