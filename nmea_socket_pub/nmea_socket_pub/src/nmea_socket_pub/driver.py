@@ -143,7 +143,16 @@ class TrimbleBD990(object):
         gpsMsg.altitude = self.alt
         gpsMsg.position_covariance = self.covariance
         gpsMsg.position_covariance_type = self.covariance_type
-
+        """
+        # todo: only publish good fix
+        if gpsMsg.navStatus < 2:
+            self.navSatPub.publish(gpsMsg)
+        else:
+            pause(5)
+            roospy.log("waiting for better fix...")
+            break
+        """
+            
         self.navSatPub.publish(gpsMsg)
         self.headingPub.publish(self.heading)
 
