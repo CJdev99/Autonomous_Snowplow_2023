@@ -1,6 +1,7 @@
 # MSU, Mankato's 2023 Autonomous Snowplow
 
 ![](https://github.com/CJdev99/Autonomous_Snowplow_2023/blob/main/robot_gif.gif)
+
 [YT video demo](https://www.youtube.com/watch?v=lg9_K-PXslY&ab_channel=ChaseDevitt)
 
 
