@@ -23,10 +23,12 @@ Sensors in use:
   - obstacle_detection package used to differentiate ground & obstacles, used for clearing & marking in costmaps
   - RTABmap_ros used to generate & store grid map from RGB-D images, will include LiDAR for mapping when functional
  
- Buffer_waypoints package is a move_base action client that allows following of multiple waypoints; will be upgraded to state machine/behavior tree in future
+ **Buffer_waypoints** package is a move_base action client that allows following of multiple waypoints; will be upgraded to state machine/behavior tree in future
   - subscribes to /initialpose topic published by RVIZ, adds clicked poses from that topic to a waypoint queue & begins navigating when prompted
+  
+ **Waypoint_follower** node is similar to buffer_waypoints but includes functionality with the react web app & a workaround to move_base not changing status when waypoint is reached
  
- nmea_socket_pub:
+ **nmea_socket_pub:**
   - reads GPS/GNSS NMEA sentence streams over specified TCP port, parsing GGA & GST sentences to both applicable GPS fix data, as well as a published covariance matrix
     - covariance matrix updated in real-time, so the kalman filter fused data takes more or less accurate GPS data into account
     
