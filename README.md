@@ -28,7 +28,7 @@ Sensors in use:
   
  **Waypoint_follower** node is similar to buffer_waypoints but includes functionality with the react web app & a workaround to move_base not changing status when waypoint is reached
  
- [Web Interface](https://github.com/CJdev99/Snowplow_web_interface) Developed React App that allows teleop, video stream, and autonomous functionality
+ [Web Interface: ](https://github.com/CJdev99/Snowplow_web_interface)  React App that allows teleop, video stream, and autonomous functionality
  
  **nmea_socket_pub:**
   - reads GPS/GNSS NMEA sentence streams over specified TCP port, parsing GGA & GST sentences to both applicable GPS fix data, as well as a published covariance matrix
