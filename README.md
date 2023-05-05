@@ -13,7 +13,7 @@ Sensors in use:
 - robot_localization EKF fusing data from the 3 sensors
   - Wheel odometry stream from roboteq_diff_driver - accesses motor controller through C++ api to  receive encoder tick count, current in Amps through each motor channel, and temperature of motor controller
   - IMU data stream from openzen_ros C++ driver
-    - Filtered & Fused orientation from magnetometer, quaternion, gyro, and accelerometer data using IMU madgwick filter
+    - Filtered & Fused orientation from magnetometer, gyro, and accelerometer data using IMU madgwick filter
   - GPS data stream from nmea_socket_pub, parsed NMEA sentences converted to robot coordinate frame using navsat_transform
  
  Intel D435i RGB-D camera used in RTABmap package for SLAM/mapping
