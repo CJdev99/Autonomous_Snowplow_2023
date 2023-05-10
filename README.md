@@ -36,3 +36,14 @@ Sensors in use:
     
  OpenCV scripts used to convert PNG images of a map/blueprint into binary for use in map servers.
 
+## Operation
+On machine running ROS master:
+
+    roslaunch navstack_pub camera.launch
+    rosrun web_video_server web_video_server
+    
+On rpi running web server & website client node (on same ROS master):
+
+    rosrun waypoint_follower driver
+    roslaunch rosbridge_server rosbridge_server.launch
+    serve -s build #(If apache not configured & react app is built)
