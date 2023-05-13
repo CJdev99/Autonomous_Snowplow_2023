@@ -31,7 +31,7 @@
   <node pkg="nodelet" type="nodelet" name="imu_filter" args="load imu_filter_madgwick/ImuFilterNodelet imu_manager">
     <remap from="imu/data_raw" to="openzen/data"/>
     <rosparam>
-      use_mag: false
+      use_mag: true
       mag_bias_x: 0
       mag_bias_y: 0
       mag_bias_z: 0
@@ -61,7 +61,7 @@
   <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
     <remap from="odometry/filtered" to="odometry/filtered_map"/>
     <remap from="gps/fix" to="/trimble_gps/fix"/>
-    <remap from="imu/data" to="/openzen/data"/>
+    <remap from="imu/data" to="/imu/data"/>
   </node> 
 
 </launch>

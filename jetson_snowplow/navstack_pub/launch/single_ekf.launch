@@ -36,7 +36,7 @@
       mag_bias_x: 0
       mag_bias_y: 0
       mag_bias_z: 0
-      orientation_stddev: 0.004
+      orientation_stddev: 0.02
       gain: 0.02
       zeta: 0.002
       publish_tf: false
@@ -46,8 +46,8 @@
 
   <!-- GPS launches: publishes NavSatFix to /fix, which will be used with navsat_transform_node-->
   <!-- /gps/fix-->
-  <node pkg="nmea_socket_pub" type="driver.py" name="trimble_gps">
-  </node>
+  <!--node pkg="nmea_socket_pub" type="driver.py" name="trimble_gps"/ -->
+
  
   <rosparam command="load" file="$(find navstack_pub)/param/single_ekf.yaml" />
   <rosparam command="load" file="$(find navstack_pub)/param/navsat_params.yaml" />
@@ -61,9 +61,8 @@
     <remap from="odometry/filtered" to="odometry/filtered_map"/>
   </node -->
   <!--node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
-    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+    <remap from="odometry/filtered" to="odometry/filtered"/>
     <remap from="gps/fix" to="/trimble_gps/fix"/>
-    <remap from="imu/data" to="/openzen/data"/>
-    <param name="~yaw_offset" value="-1.57"/>
-  </node -->
+    <remap from="imu/data" to="/imu/data"/>
+  </node-->
 </launch>

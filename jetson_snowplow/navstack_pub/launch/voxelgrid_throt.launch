@@ -1,10 +1,10 @@
 <launch>
 
-    <arg name="use_lidar"                         default="false"/>
-    <arg name="database_path"                     default="~/.ros/rtabmap.db"/> <!--~/.ros/rtabmap_inside.db -->
+    <arg name="use_lidar"                         default="false"/> <!--trafton4-->
+    <arg name="database_path"                     default="~/.ros/rtabmap_trafton4.db"/> <!--~/.ros/rtabmap_trafton2.db ~/.ros/rtabmap_outside.db for outside -->
     <arg name="camera_tilt_angle"                 default="0.0"/>
     <arg name="use_rtabmapviz"                    default="false"/>
-    <arg name="rtabmap_args"                      default=""/> <!--  -delete_db_on_start-->
+    <arg name="rtabmap_args"                      default="--delete_db_on_start"/> <!--  - -delete_db_on_start to reset map or localization:=true to only localize and not build map-->
     
     <arg     if="$(arg use_lidar)" name="rtabmap_default_args" default="$(arg rtabmap_args)
     --RGBD/NeighborLinkRefining true
@@ -28,15 +28,15 @@
    <arg unless="$(arg use_lidar)" name="rtabmap_default_args" default="$(arg rtabmap_args)
     
     --RGBD/NeighborLinkRefining true
-    --RGBD/AngularUpdate 0.01
+    --RGBD/AngularUpdate 0.01 
     --RGBD/LinearUpdate 0.01
     --RGBD/LocalRadius 5
     --RGBD/OptimizeFromGraphEnd false
     --Grid/FromDepth true
-    --Grid/MaxObstacleHeight 0.7
-    --Grid/MinObstacleheight 0.17
+    --Grid/MaxObstacleHeight 5
+    --Grid/MinObstacleheight -99.99
     --Grid/RayTracing true
-    --Reg/Force3DoF true
+    --Reg/Force3DoF true 
     --Reg/Strategy 0
     --Mem/STMSize 30"/>
 
@@ -55,7 +55,7 @@
     type="nodelet"
     name="rgbd_sync"
     output="screen"
-    args="load rtabmap_ros/rgbd_sync /camera/realsense2_camera_manager">
+    args="load rtabmap_sync/rgbd_sync /camera/realsense2_camera_manager">
     <param name="approx_sync"                   value="false"/>
     <remap from="rgb/image"                     to="/camera/color/image_raw"/>
     <remap from="depth/image"                   to="/camera/aligned_depth_to_color/image_raw"/>
@@ -67,7 +67,7 @@
     type="nodelet"
     name="points_xyzrgb"
     output="screen"
-    args="load rtabmap_ros/point_cloud_xyzrgb /camera/realsense2_camera_manager">
+    args="load rtabmap_util/point_cloud_xyzrgb /camera/realsense2_camera_manager">
     <param name="decimation"                    value="4"/>
     <param name="voxel_size"                    value="0.05"/>
     <param name="approx_sync"                   value="false"/>
@@ -79,14 +79,19 @@
     type="nodelet"
     name="obstacle_detection"
     output="screen"
-    args="load rtabmap_ros/obstacles_detection /camera/realsense2_camera_manager">
+    args="load rtabmap_util/obstacles_detection /camera/realsense2_camera_manager">
     <param name="wait_for_transform"            value="true"/>
     <param name="frame_id"                      value="base_link"/>
     <remap from="cloud"                         to="depth/color/voxels"/>
     <remap from="ground"                        to="depth/color/ground"/>
     <remap from="obstacles"                     to="depth/color/obstacles"/>
   </node>
-  <!--node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry" output="screen" args="$(arg rtabmap_args)">
+  <!--node
+    pkg="nodelet"
+    type="nodelet"
+    name="rgbd_odometry"
+    output="screen"
+    args="load rtabmap_odom/rgbd_odometry /camera/realsense2_camera_manager">
     <remap from="rgb/image"       to="/camera/color/image_raw"/>
     <remap from="depth/image"     to="/camera/aligned_depth_to_color/image_raw"/>
     <remap from="rgb/camera_info" to="/camera/color/camera_info"/>
@@ -101,16 +106,18 @@
     <param name="Odom/ResetCountdown"    type="string" value="1"/>
     <param name="Vis/FeatureType"        type="string" value="6"/> 
     <param name="OdomF2M/MaxSize"        type="string" value="1000"/>
-  </node -->
+  </node-->
 
- 
 
   <node
   name="rtabmap"
-  pkg="rtabmap_ros"
+  pkg="rtabmap_slam"
   type="rtabmap"
   output="screen"
   args="$(arg rtabmap_default_args)">
+
+  <param name="map_always_update"             value="true"/>
+
   <param name="subscribe_depth"               value="false"/>
   <param name="subscribe_rgb"                 value="false"/>
   <param name="subscribe_rgbd"                value="true"/>
@@ -121,6 +128,7 @@
   <param name="subscribe_user_data"           value="false"/>
   <param name="subscribe_odom_info"           value="false"/>
   <param name="gps_topic" value="trimble_gps/fix"/>
+  <param name="imu_topic" value="imu/data"/>
   <param name="frame_id"                      value="base_link"/>
   <param name="map_frame_id"                  value="map"/>
   <param name="odom_frame_id"                 value="odom"/>

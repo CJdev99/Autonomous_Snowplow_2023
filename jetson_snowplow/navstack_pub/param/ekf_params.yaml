@@ -17,14 +17,14 @@ ekf_se_odom: # Used only for broadcasting odom to base_link transforms => for lo
 # -------------------------------------
 # Wheel odometry: fusing x y, dx dy, dyaw
   odom0: /odom
-  odom0_config: [true, true, false,
+  odom0_config: [false, false, false,
                  false, false, true,
                  true,  true,  false,
                  false, false, true,
                  false, false, false]
   odom0_queue_size: 10
-  odom0_nodelay: false
-  odom0_differential: false
+  odom0_nodelay: true
+  odom0_differential: true
   odom0_relative: false
 
 # -------------------------------------
@@ -120,14 +120,14 @@ ekf_se_map:
 # Wheel odometry:
 
   odom0: /odom
-  odom0_config: [true, true, false,
+  odom0_config: [false, false, false,
                  false, false, true,
                  true,  true,  false,
                  false, false, true,
                  false, false, false]
   odom0_queue_size: 10
-  odom0_nodelay: false
-  odom0_differential: false # try to change this
+  odom0_nodelay: true
+  odom0_differential: true # try to change this
   odom0_relative: false
 
 # -------------------------------------
@@ -140,7 +140,7 @@ ekf_se_map:
                  false, false, false,
                  false, false, false]
   odom1_queue_size: 10
-  odom1_nodelay: false
+  odom1_nodelay: true
   odom1_differential: false
   odom1_relative: false
 

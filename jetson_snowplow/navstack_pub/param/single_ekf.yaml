@@ -1,5 +1,5 @@
 ekf_se_odom:
-  frequency: 30
+  frequency: 40
   sensor_timeout: 0.1
   two_d_mode: true
   transform_time_offset: 0.01
@@ -21,24 +21,27 @@ ekf_se_odom:
                  true,  false,  false,
                  false, false, true,
                  false, false, false]
-  odom0_queue_size: 20
+  odom0_queue_size: 10
   odom0_nodelay: true
-  odom0_differential: false # try to change this
+  odom0_differential: true # try to change this
   odom0_relative: false
 
+  
+  # ---------------------
   # -------------------------------------
   # GPS odometry: change to odometry/gps
+  #odom1: /odometry/gps
+  #odom1_config: [true,  true,  false,
+  #               false, false, false,
+  #               false, false, false,
+  #               false, false, false,
+  #               false, false, false]
+  #odom1_queue_size: 2
+  #odom1_nodelay: true
+  #Odom1_differential: false
+  #odom1_relative: false
 
-  odom1: /odometry/gps
-  odom1_config: [false,  false,  false,
-                 false, false, false,
-                 false, false, false,
-                 false, false, false,
-                 false, false, false]
-  odom1_queue_size: 10
-  odom1_nodelay: false
-  odom1_differential: false
-  odom1_relative: false
+  
   
   #: /vo
   #odom2_config: [false, false, false,
@@ -75,8 +78,8 @@ ekf_se_odom:
                 false,  false,  true,
                 false, false, false,
                 false,  false,  true,
-                true,  false,  false]
-  imu0_nodelay: false #changed
+                false,  false,  false]
+  imu0_nodelay: true #changed
   imu0_differential: false
   imu0_relative: true
   imu0_queue_size: 10
@@ -116,11 +119,8 @@ ekf_se_odom:
                                 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9,  0,    0,
                                 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9,  0,
                                 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]
-
-
-
 ekf_se_map:
-  frequency: 30
+  frequency: 40
   sensor_timeout: 0.1
   two_d_mode: true
   transform_time_offset: 0.01
@@ -130,25 +130,22 @@ ekf_se_map:
 
   map_frame: map
   odom_frame: odom
-  base_link_frame: base_link
-  world_frame: map
+  base_link_frame: gps_link
+  world_frame: odom
 
   # -------------------------------------
   # Wheel odometry:
 
   odom0: /odom
   odom0_config: [true, true, false,
-                 false, false, false,
-                 true,  false,  false,
+                 false, false, true,
+                 true,  true,  false,
                  false, false, true,
                  false, false, false]
-  odom0_queue_size: 20
+  odom0_queue_size: 10
   odom0_nodelay: true
   odom0_differential: false # try to change this
   odom0_relative: false
-
-  # -------------------------------------
-  # GPS odometry: change to odometry/gps
 
   odom1: /odometry/gps
   odom1_config: [true,  true,  false,
@@ -157,9 +154,13 @@ ekf_se_map:
                  false, false, false,
                  false, false, false]
   odom1_queue_size: 10
-  odom1_nodelay: false
+  odom1_nodelay: true
   odom1_differential: false
   odom1_relative: false
+  # -------------------------------------
+  # GPS odometry: change to odometry/gps
+
+  
   
   #: /vo
   #odom2_config: [false, false, false,
@@ -237,8 +238,6 @@ ekf_se_map:
                                 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9,  0,    0,
                                 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9,  0,
                                 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]
-
-
 
 
 
