@@ -41,7 +41,8 @@ class MainNode
         void saveWaypointCallback(const std_msgs::Empty::ConstPtr& msg);
         void toggleNavigationCallback(const std_msgs::Empty::ConstPtr& msg);
         void clickedPointCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
-        void resultCallback(const move::PoseWithCovarianceStamped::ConstPtr& msg);
+        void statusCallback(const actionlib_msgs::GoalStatusArray::ConstPtr& msg);
+        //void resultCallback(const move::PoseWithCovarianceStamped::ConstPtr& msg);
         //void stopNavigationCallback(const std_msgs::Empty::ConstPtr& msg);
         void loadQueue();
         int run();
@@ -357,5 +358,4 @@ int main(int argc, char **argv)
 
   return node.run();
 }
-
 
