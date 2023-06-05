@@ -47,3 +47,4 @@ On rpi running web server & website client node (on same ROS master):
     rosrun waypoint_follower driver
     roslaunch rosbridge_server rosbridge_server.launch
     serve -s build #(in react app folder; If apache not configured & react app is built)
+    *(to access from other network, configure husarnet and join p2p network)
