@@ -7,6 +7,8 @@
 
 Metapackage including ROS packages, configurations, and launch files used on the 2022-2023 MNSU autonomous snowplow project.
 
+![](https://github.com/CJdev99/Autonomous_Snowplow_2023/blob/main/sensorpipeline.png)
+
 Sensors in use:
 - Trimble GPS reciever, swiftnav antenna, LPMS U3 IMU, 2 1024 ppr encoders, Intel d435i RGB-D camera
 
