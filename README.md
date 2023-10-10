@@ -38,6 +38,9 @@ Sensors in use:
     
  OpenCV scripts used to convert PNG images of a map/blueprint into binary for use in map servers.
 
+
+### for more technical detail on the system and explanation on software architecture decisions see [this directory](https://github.com/CJdev99/Autonomous_Snowplow_2023/blob/main/Snowplow-whitepaper.pdf)
+
 ## Operation
 On machine running ROS master:
 
