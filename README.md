@@ -45,6 +45,9 @@ Sensor Descriptions:
 
 ### for more technical detail on the system and explanation on software architecture decisions see [this directory](https://github.com/CJdev99/Autonomous_Snowplow_2023/blob/main/Snowplow-whitepaper.pdf)
 
+Additional Project outcomes:
+- [Migrated the Roboteq ROS C++ driver to ROS2: ](https://github.com/CJdev99/roboteq_ros2_driver)
+
 ## Operation
 On machine running ROS master:
 
