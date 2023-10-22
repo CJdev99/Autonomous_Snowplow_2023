@@ -19,7 +19,7 @@ Sensor Descriptions:
   - GPS data stream from nmea_socket_pub, parsed NMEA sentences converted to robot coordinate frame using navsat_transform
  
  Intel D435i RGB-D camera used in RTABmap package for SLAM/mapping
-  - Parameters and filters located under [here](Autonomous_Snowplow_2023/jetson_snowplow/navstack_pub/launch/voxelgrid_throt.launch)
+  - Parameters and filters located under [here](https://github.com/CJdev99/Autonomous_Snowplow_2023/blob/main/jetson_snowplow/navstack_pub/launch/voxelgrid_throt.launch)
 
 ### Image Pipeline:
 
